@@ -3,8 +3,8 @@
 ## Timeline (2026-11-07)
 - ~18:13  Injected fault: `EXTRA_LATENCY=500ms` on productcatalogservice
 - ~18:15  `boutique:slow_ratio:rate5m` rose above 0.2
-- TODO    `DemoHighLatency` alert fired
-- TODO    Fault removed (`EXTRA_LATENCY` unset, deployment rolled out)
+- Alert fired:   `DemoHighLatency` alert fired
+- Fault removed:    Fault removed (`EXTRA_LATENCY` unset, deployment rolled out)
 - ~19:29  p95 latency back to normal; alert resolved
 
 ## Symptoms
@@ -33,10 +33,8 @@ Removed the `EXTRA_LATENCY` environment variable and let the deployment roll out
 - Several services appear as `unknown_service` because they don't set a service name.
 
 ## Evidence
-- `incident-1-recovery-alert.png`: DemoHighLatency back to Inactive
-- `incident-1-trace.png`: slow trace waterfall
-- `incident-1-dashboard.png`: dashboard after recovery
 - `incident-1-slow-ratio.png`: slow ratio jumping from 0 to about 0.6
 - `incident-1-dashboard-during.png`: dashboard during the incident (latency up, availability 100%)
 - `incident-1-trace.png`: slow trace, ListProducts took 502 ms of 536 ms
 - `incident-1-dashboard-recovered.png`: dashboard after the fix
+- `incident-1-recovery-alert.png`: DemoHighLatency back to Inactive
