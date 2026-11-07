@@ -1,0 +1,25 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: boutique-slo-demo-alerts
+  namespace: monitoring
+  labels:
+    release: kps
+spec:
+  groups:
+    - name: boutique-demo
+      rules:
+        - alert: DemoHighErrorRate
+          expr: boutique:error_ratio:rate5m > 0.05
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Error ratio above 5% (demo threshold)"
+        - alert: DemoHighLatency
+          expr: boutique:slow_ratio:rate5m > 0.2
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            summary: "More than 20% of requests slower than 100 ms (demo threshold)"
