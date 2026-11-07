@@ -3,7 +3,7 @@
 ## Timeline (2026-11-07)
 - ~21:25  First attempt to deploy `currencyservice:v9.9.9` (pod rw9d7, deleted by a ReplicaSet scale-down)
 - 21:34   Second attempt; new pod created (7zkv7), stuck in ErrImagePull then ImagePullBackOff
-- ~21:4x  Rolled back with `kubectl rollout undo` (old pod kept, stuck pod removed)
+- ~21:44  Rolled back with `kubectl rollout undo` (old pod kept, stuck pod removed)
 
 ## Symptoms
 - `kubectl rollout status` timed out: "1 old replicas are pending termination".
