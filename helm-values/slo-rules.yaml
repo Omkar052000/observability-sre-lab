@@ -1,0 +1,35 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: boutique-slo-rules
+  namespace: monitoring
+  labels:
+    release: kps
+spec:
+  groups:
+    - name: boutique-slo-recording
+      rules:
+        - record: boutique:error_ratio:rate5m
+          expr: |
+            sum(rate(traces_span_metrics_calls_total{status_code="STATUS_CODE_ERROR"}[5m]))
+            /
+            sum(rate(traces_span_metrics_calls_total[5m]))
+        - record: boutique:error_ratio:rate1h
+          expr: |
+            sum(rate(traces_span_metrics_calls_total{status_code="STATUS_CODE_ERROR"}[1h]))
+            /
+            sum(rate(traces_span_metrics_calls_total[1h]))
+        - record: boutique:slow_ratio:rate5m
+          expr: |
+            1 - (
+              sum(rate(traces_span_metrics_duration_milliseconds_bucket{le="100.0"}[5m]))
+              /
+              sum(rate(traces_span_metrics_duration_milliseconds_count[5m]))
+            )
+        - record: boutique:slow_ratio:rate1h
+          expr: |
+            1 - (
+              sum(rate(traces_span_metrics_duration_milliseconds_bucket{le="100.0"}[1h]))
+              /
+              sum(rate(traces_span_metrics_duration_milliseconds_count[1h]))
+            )

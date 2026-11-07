@@ -1,0 +1,35 @@
+mode: deployment
+fullnameOverride: otel-collector
+image:
+  repository: otel/opentelemetry-collector-contrib
+command:
+  name: otelcol-contrib
+presets:
+  kubernetesAttributes:
+    enabled: true
+ports:
+  spanmetrics:
+    enabled: true
+    containerPort: 8889
+    servicePort: 8889
+    protocol: TCP
+config:
+  connectors:
+    spanmetrics: {}
+  exporters:
+    otlp/tempo:
+      endpoint: tempo.monitoring.svc.cluster.local:4317
+      tls:
+        insecure: true
+    prometheus:
+      endpoint: 0.0.0.0:8889
+  service:
+    pipelines:
+      traces:
+        receivers: [otlp]
+        processors: [k8sattributes, batch]
+        exporters: [otlp/tempo, spanmetrics]
+      metrics:
+        receivers: [spanmetrics]
+        processors: [batch]
+        exporters: [prometheus]
