@@ -1,0 +1,41 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: boutique-slo-alerts
+  namespace: monitoring
+  labels:
+    release: kps
+spec:
+  groups:
+    - name: boutique-slo-alerts
+      rules:
+        - alert: AvailabilityBudgetBurnFast
+          expr: |
+            boutique:error_ratio:rate5m > (14.4 * 0.01)
+            and
+            boutique:error_ratio:rate1h > (14.4 * 0.01)
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Availability SLO burning fast (14.4x)"
+            description: "Error ratio is far above the 1% budget. At this rate the 30-day budget is gone in about 2 days."
+        - alert: AvailabilityBudgetBurnSlow
+          expr: |
+            boutique:error_ratio:rate1h > (3 * 0.01)
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Availability SLO burning slowly (3x)"
+        - alert: LatencyBudgetBurnFast
+          expr: |
+            boutique:slow_ratio:rate5m > (14.4 * 0.05)
+            and
+            boutique:slow_ratio:rate1h > (14.4 * 0.05)
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Latency SLO burning fast"
+            description: "More than 5% budget burn: too many requests are slower than 100 ms."
